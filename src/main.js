@@ -5,7 +5,7 @@ import {createFilms} from "./view/films";
 import {createFilmsCard} from "./view/filmsCard";
 import {createShowMoreButton} from "./view/showMore";
 import {createFooterStatistics} from "./view/footerStatistics";
-
+import {createSitePopup} from "./view/popup";
 
 const FILM_CARDS_COUNT = 5;
 const EXTRA_FILM_CARDS = 2;
@@ -20,6 +20,7 @@ const renderFilmsCard = (count, container) => {
   }
 };
 
+const bodyElement = document.querySelector(`body`);
 const mainElement = document.querySelector(`.main`);
 const headerElement = document.querySelector(`.header`);
 const footerElement = document.querySelector(`.footer`);
@@ -40,3 +41,7 @@ renderFilmsCard(EXTRA_FILM_CARDS, filmsListContainerThree);
 
 render(filmsList[0], createShowMoreButton(), `beforeend`);
 render(footerElement, createFooterStatistics(), `beforeend`);
+render(bodyElement, createSitePopup(), `beforeend`);
+
+const filmDetailsPopup = document.querySelector(`.film-details`);
+filmDetailsPopup.classList.add(`visually-hidden`);
