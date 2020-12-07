@@ -6,6 +6,7 @@ import FilmView from "./view/filmsCard";
 import ShowMoreButtonView from "./view/showMore";
 import FooterStatisticsView from "./view/footerStatistics";
 import PopupView from "./view/popup";
+import NoFilmsView from "./view/noFilms";
 import {getMockArray} from "./mock/mockData";
 import {render, RenderPosition} from "./utils";
 
@@ -14,7 +15,8 @@ const EXTRA_FILM_CARDS = 2;
 
 const MOCK_FILMS_COUNT = 20;
 
-const mockArray = getMockArray(MOCK_FILMS_COUNT);
+// const mockArray = getMockArray(MOCK_FILMS_COUNT);
+const mockArray = new Array();
 
 const renderFilmsCard = (startCount, endCount, container, dataArray) => {
   for (let i = startCount; i < endCount; i++) {
@@ -75,38 +77,43 @@ const removePopup = () => {
 render(headerElement, new SiteProfileView().getElement(), RenderPosition.BEFOREEND);
 render(mainElement, new SiteNavigationView().getElement(), RenderPosition.BEFOREEND);
 render(mainElement, new SiteSortView().getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new SiteFilmsBlockView().getElement(), RenderPosition.BEFOREEND);
 
-const filmsListElements = mainElement.querySelectorAll(`.films-list`);
-const filmsListContainer = filmsListElements[0].querySelector(`.films-list__container`);
-const topRatedContainer = filmsListElements[1].querySelector(`.films-list__container`);
-const mostCommentedContainer = filmsListElements[2].querySelector(`.films-list__container`);
+if (mockArray.length > 0) {
+  render(mainElement, new SiteFilmsBlockView().getElement(), RenderPosition.BEFOREEND);
 
-renderFilmsCard(0, FILM_CARDS_COUNT, filmsListContainer, mockArray);
+  const filmsListElements = mainElement.querySelectorAll(`.films-list`);
+  const filmsListContainer = filmsListElements[0].querySelector(`.films-list__container`);
+  const topRatedContainer = filmsListElements[1].querySelector(`.films-list__container`);
+  const mostCommentedContainer = filmsListElements[2].querySelector(`.films-list__container`);
 
+  renderFilmsCard(0, FILM_CARDS_COUNT, filmsListContainer, mockArray);
 
-const topRatedArray = mockArray.slice().sort((a, b) => {
-  return b.rating - a.rating;
-});
-const mostCommentedArray = mockArray.slice().sort((a, b) => {
-  return b.comments.length - a.comments.length;
-});
+  const topRatedArray = mockArray.slice().sort((a, b) => {
+    return b.rating - a.rating;
+  });
+  const mostCommentedArray = mockArray.slice().sort((a, b) => {
+    return b.comments.length - a.comments.length;
+  });
 
-renderFilmsCard(0, EXTRA_FILM_CARDS, topRatedContainer, topRatedArray);
-renderFilmsCard(0, EXTRA_FILM_CARDS, mostCommentedContainer, mostCommentedArray);
+  renderFilmsCard(0, EXTRA_FILM_CARDS, topRatedContainer, topRatedArray);
+  renderFilmsCard(0, EXTRA_FILM_CARDS, mostCommentedContainer, mostCommentedArray);
 
-const showMoreButtonComponent = new ShowMoreButtonView();
-render(filmsListElements[0], showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
-render(footerElement, new FooterStatisticsView(mockArray.length).getElement(), RenderPosition.BEFOREEND);
+  const showMoreButtonComponent = new ShowMoreButtonView();
+  render(filmsListElements[0], showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+  render(footerElement, new FooterStatisticsView(mockArray.length).getElement(), RenderPosition.BEFOREEND);
 
+  let countRenderedFilms = FILM_CARDS_COUNT;
+  showMoreButtonComponent.getElement().addEventListener(`click`, () => {
+    if (countRenderedFilms < mockArray.length) {
+      renderFilmsCard(countRenderedFilms, countRenderedFilms + FILM_CARDS_COUNT, filmsListContainer, mockArray);
+      countRenderedFilms += FILM_CARDS_COUNT;
+    }
+    if (countRenderedFilms === mockArray.length) {
+      showMoreButtonComponent.getElement().classList.add(`visually-hidden`);
+    }
+  });
 
-let countRenderedFilms = FILM_CARDS_COUNT;
-showMoreButtonComponent.getElement().addEventListener(`click`, () => {
-  if (countRenderedFilms < mockArray.length) {
-    renderFilmsCard(countRenderedFilms, countRenderedFilms + FILM_CARDS_COUNT, filmsListContainer, mockArray);
-    countRenderedFilms += FILM_CARDS_COUNT;
-  }
-  if (countRenderedFilms === mockArray.length) {
-    showMoreButtonComponent.getElement().classList.add(`visually-hidden`);
-  }
-});
+} else {
+  render(mainElement, new NoFilmsView().getElement(), RenderPosition.BEFOREEND);
+}
+
