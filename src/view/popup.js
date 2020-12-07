@@ -1,4 +1,6 @@
-export const createSitePopup = (film) => {
+import {createElement} from "../utils";
+
+const createSitePopup = (film) => {
   const genresLabel = film.genres.length === 1 ? `Genre` : `Genres`;
   let genresList = ``;
   film.genres.forEach((genre) => {
@@ -143,3 +145,26 @@ export const createSitePopup = (film) => {
   </form>
 </section>`;
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSitePopup(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

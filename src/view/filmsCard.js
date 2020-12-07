@@ -1,7 +1,9 @@
+import {createElement} from "../utils";
+
 const MAX_DESC_COUNT = 140;
 const DESC_COUNT_FOR_LABEL = 139;
 
-export const createFilmsCard = (film) => {
+const createFilmsCard = (film) => {
   const commentsLabel = film.comments.length === 1 ? `comment` : `comments`;
   const description = film.description.length > MAX_DESC_COUNT ? `` + film.description.substring(0, DESC_COUNT_FOR_LABEL) + `...` : film.description;
 
@@ -23,3 +25,26 @@ export const createFilmsCard = (film) => {
     </div>
   </article>`;
 };
+
+export default class Film {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmsCard(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

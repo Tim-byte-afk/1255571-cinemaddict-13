@@ -1,4 +1,4 @@
-export {shuffle, getRandomInt};
+export {shuffle, getRandomInt, render, RenderPosition, createElement};
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -22,4 +22,27 @@ const shuffle = (someArray, count) => {
   }
 
   return newArray;
+};
+
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement(`div`); // 1
+  newElement.innerHTML = template; // 2
+
+  return newElement.firstChild; // 3
 };
