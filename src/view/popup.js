@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract.js";
 
 const createSitePopup = (film) => {
   const genresLabel = film.genres.length === 1 ? `Genre` : `Genres`;
@@ -146,25 +146,27 @@ const createSitePopup = (film) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._callback = {};
+    this._clicClosekHandler = this._clicClosekHandler.bind(this);
   }
 
   getTemplate() {
     return createSitePopup(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _clicClosekHandler(evt) {
+    evt.preventDefault();
 
-    return this._element;
+    this._callback.clickClose();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickCloseHandler(callback) {
+    this._callback.clickClose = callback;
+
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clicClosekHandler);
   }
 }

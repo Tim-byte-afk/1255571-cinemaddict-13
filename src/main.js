@@ -1,13 +1,13 @@
 import SiteProfileView from "./view/profile";
-import SiteNavigationView from "./view/mainNavigation";
-import SiteSortView from "./view/sort";
-import SiteFilmsBlockView from "./view/films";
-import FilmView from "./view/filmsCard";
-import ShowMoreButtonView from "./view/showMore";
-import FooterStatisticsView from "./view/footerStatistics";
+import SiteNavigationView from "./view/main-navigation";
+import SiteSortView from "./view/sort-view";
+import SiteFilmsBlockView from "./view/films-block-view";
+import FilmView from "./view/film-view";
+import ShowMoreButtonView from "./view/show-more";
+import FooterStatisticsView from "./view/footer-statistics";
 import PopupView from "./view/popup";
-import NoFilmsView from "./view/noFilms";
-import {getMockArray} from "./mock/mockData";
+import NoFilmsView from "./view/no-films";
+import {getMockArray} from "./mock/mock-data";
 import {render, RenderPosition} from "./utils";
 
 const FILM_CARDS_COUNT = 5;
@@ -15,8 +15,7 @@ const EXTRA_FILM_CARDS = 2;
 
 const MOCK_FILMS_COUNT = 20;
 
-// const mockArray = getMockArray(MOCK_FILMS_COUNT);
-const mockArray = new Array();
+const mockArray = getMockArray(MOCK_FILMS_COUNT);
 
 const renderFilmsCard = (startCount, endCount, container, dataArray) => {
   for (let i = startCount; i < endCount; i++) {
@@ -24,9 +23,7 @@ const renderFilmsCard = (startCount, endCount, container, dataArray) => {
     const filmComponent = new FilmView(filmData);
     render(container, filmComponent.getElement(), RenderPosition.BEFOREEND);
 
-    filmComponent.getElement().addEventListener(`click`, (evt) => {
-      openPopup(evt);
-    });
+    filmComponent.setClickHandler(openPopup);
   }
 };
 
@@ -47,9 +44,7 @@ const openPopup = (evt) => {
 
     bodyElement.appendChild(popupComponent.getElement());
 
-    popupComponent.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      closePopup();
-    });
+    popupComponent.setClickCloseHandler(closePopup);
     document.addEventListener(`keydown`, popupEscPressHandler);
   }
 };
@@ -78,7 +73,7 @@ render(headerElement, new SiteProfileView().getElement(), RenderPosition.BEFOREE
 render(mainElement, new SiteNavigationView().getElement(), RenderPosition.BEFOREEND);
 render(mainElement, new SiteSortView().getElement(), RenderPosition.BEFOREEND);
 
-if (mockArray.length > 0) {
+if (mockArray.length) {
   render(mainElement, new SiteFilmsBlockView().getElement(), RenderPosition.BEFOREEND);
 
   const filmsListElements = mainElement.querySelectorAll(`.films-list`);
@@ -103,7 +98,7 @@ if (mockArray.length > 0) {
   render(footerElement, new FooterStatisticsView(mockArray.length).getElement(), RenderPosition.BEFOREEND);
 
   let countRenderedFilms = FILM_CARDS_COUNT;
-  showMoreButtonComponent.getElement().addEventListener(`click`, () => {
+  showMoreButtonComponent.setClickHandler(() => {
     if (countRenderedFilms < mockArray.length) {
       renderFilmsCard(countRenderedFilms, countRenderedFilms + FILM_CARDS_COUNT, filmsListContainer, mockArray);
       countRenderedFilms += FILM_CARDS_COUNT;

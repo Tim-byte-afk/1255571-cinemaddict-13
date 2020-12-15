@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract.js";
 
 const MAX_DESC_COUNT = 140;
 const DESC_COUNT_FOR_LABEL = 139;
@@ -26,25 +26,27 @@ const createFilmsCard = (film) => {
   </article>`;
 };
 
-export default class Film {
+export default class FilmView extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._callback = {};
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmsCard(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _clickHandler(evt) {
+    evt.preventDefault();
 
-    return this._element;
+    this._callback.click(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+
+    this.getElement().addEventListener(`click`, this._clickHandler);
   }
 }

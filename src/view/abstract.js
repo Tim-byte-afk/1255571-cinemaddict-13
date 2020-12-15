@@ -1,17 +1,17 @@
 import {createElement} from "../utils";
 
-const createFooterStatistics = (count) => {
-  return `<p>${count} movies inside</p>`;
-};
+export default class Abstract {
+  constructor() {
+    if (new.target === Abstract) {
+      throw new Error(`Нельзя сотворить здесь.`);
+    }
 
-export default class FooterStatistics {
-  constructor(count) {
-    this._count = count;
     this._element = null;
+    this._callback = {};
   }
 
   getTemplate() {
-    return createFooterStatistics(this._count);
+    throw new Error(`Абстрактный метод не реализован: getTemplate`);
   }
 
   getElement() {
